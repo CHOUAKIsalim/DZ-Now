@@ -9,4 +9,7 @@ interface ArticleService {
     @get:GET("news")
     val articles:Observable<List<Article>>
 
+    @get:GET("news/?category=videos")
+    val articlesWithVideos:Observable<List<Article>>
+
 }

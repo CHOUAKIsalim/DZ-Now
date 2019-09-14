@@ -22,7 +22,7 @@ class EnregistresFragment : Fragment() {
         enregistresViewModel =
             ViewModelProviders.of(this).get(EnregistresViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_accueil, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
+             val textView: TextView = root.findViewById(R.id.text_notifications)
         enregistresViewModel.text.observe(this, Observer {
             textView.text = it
         })

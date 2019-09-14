@@ -11,7 +11,6 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,7 +40,16 @@ import java.util.ArrayList
 import java.util.Objects
 
 
- class ExoPlayerRecyclerView(private var myContext: Context, private val attrs: AttributeSet? = null) : RecyclerView(myContext,attrs) {
+ class ExoPlayerRecyclerView : RecyclerView {
+
+     constructor(myContext: Context, attrs: AttributeSet) : super(myContext, attrs) {
+         this.myContext = myContext
+         init(myContext)
+     }
+     constructor(myContext: Context) : super(myContext) {
+         this.myContext = myContext
+         init(myContext)
+     }
 
     private val TAG : String = "ExoPlayerRecyclerView"
     private val AppName: String = "DZ-NOW"
@@ -70,7 +78,7 @@ import java.util.Objects
     private var requestManager: RequestManager? = null
     // controlling volume state
     private var volumeState: VolumeState? = null
-
+    private lateinit var myContext : Context
     private val videoViewClickListener : OnClickListener = OnClickListener() {
         @Override
         fun onClick(v: View) {
@@ -78,9 +86,6 @@ import java.util.Objects
         }
     }
 
-     init {
-         init(myContext)
-     }
 
 
     private fun init(context: Context) {
@@ -113,7 +118,7 @@ import java.util.Objects
 
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrollStateChanged(@NonNull recyclerView: RecyclerView , newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView , newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -135,11 +140,11 @@ import java.util.Objects
 
         addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
 
-            override fun onChildViewAttachedToWindow(@NonNull view: View ) {
+            override fun onChildViewAttachedToWindow(view: View ) {
 
             }
 
-            override fun onChildViewDetachedFromWindow(@NonNull view: View) {
+            override fun onChildViewDetachedFromWindow(view: View) {
                 if (viewHolderParent != null && viewHolderParent!! == view) {
                     resetVideoView()
                 }
@@ -147,10 +152,10 @@ import java.util.Objects
             })
 
         videoPlayer?.addListener(object:  Player.EventListener {
-
-            override fun onTimelineChanged(timeline: Timeline, @Nullable manifest: Any, reason: Int) {
+            override fun onTimelineChanged(timeline: Timeline?, @Nullable manifest: Any?, reason: Int) {
 
             }
+
 
             override fun onTracksChanged(trackGroups: TrackGroupArray,
                 trackSelections: TrackSelectionArray) {
@@ -175,7 +180,7 @@ import java.util.Objects
                         if (progressBar != null) {
                             progressBar!!.visibility = GONE
                         }
-                        if (!isVideoViewAdded!!) {
+                        if (isVideoViewAdded== null || !isVideoViewAdded!!) {
                             addVideoView()
                         }
                     }
@@ -336,7 +341,7 @@ import java.util.Objects
     }
 
     private fun resetVideoView() {
-        if (isVideoViewAdded!!) {
+        if (isVideoViewAdded != null && isVideoViewAdded!!) {
             removeVideoView(videoSurfaceView!!)
             playPosition = -1
             videoSurfaceView!!.visibility = INVISIBLE

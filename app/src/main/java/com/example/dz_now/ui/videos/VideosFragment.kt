@@ -5,10 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.dz_now.ExoPlayerRecyclerView
-import com.example.dz_now.R
-import com.example.dz_now.MediaRecyclerAdapter
-import com.example.dz_now.MediaObject
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.core.content.ContextCompat
@@ -18,12 +14,26 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.RequestManager
 import android.os.Looper
 import android.os.Handler
+import android.util.Log
+import com.example.dz_now.*
+import com.example.dz_now.entites.Article
+import com.example.dz_now.services.ArticleService
+import com.example.dz_now.services.RetrofitClient
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 
 class VideosFragment : Fragment() {
 
     //Reference to recyclerview
     private var recyclerView: ExoPlayerRecyclerView? = null
+
+    //The service to get the categories
+    private lateinit var articleApi: ArticleService
+
+    // Observer
+    private lateinit var compositeDisposable: CompositeDisposable
 
     private val mediaObjectList : ArrayList<MediaObject> = ArrayList()
     private var mAdapter: MediaRecyclerAdapter? = null
@@ -43,9 +53,44 @@ class VideosFragment : Fragment() {
         recyclerView!!.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         recyclerView!!.itemAnimator = DefaultItemAnimator()
 
-        //prepare content
-        prepareVideoList()
+        //Init the api
+        val retrofit = RetrofitClient.instance
+        articleApi = retrofit.create(ArticleService::class.java)
 
+        compositeDisposable = CompositeDisposable()
+
+        getArticles()
+
+        return root
+    }
+
+    private fun initGlide(): RequestManager {
+        val options = RequestOptions()
+        return Glide.with(this)
+            .setDefaultRequestOptions(options)
+    }
+
+    private fun getArticles() {
+        compositeDisposable.add(articleApi.articlesWithVideos
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe{articles->displayArticles(articles)}
+        )
+    }
+
+    private fun displayArticles(articles : List<Article>) {
+        articles.forEach{
+            if(it.video !=null && it.video != "")
+            {
+                val mediaObject = MediaObject()
+                mediaObject.setId(it.id)
+                mediaObject.setUserHandle(it.source)
+                mediaObject.setTitle(it.title)
+                mediaObject.setCoverUrl(it.image)
+                mediaObject.setUrl(it.video+".mp4")
+                mediaObjectList.add(mediaObject)
+            }
+        }
         //set data object
         recyclerView!!.setMediaObjects(mediaObjectList)
         mAdapter = MediaRecyclerAdapter(mediaObjectList, initGlide())
@@ -57,74 +102,7 @@ class VideosFragment : Fragment() {
             firstTime = false
         }
 
-        return root
     }
 
-    private fun initGlide(): RequestManager {
-        val options = RequestOptions()
-        return Glide.with(this)
-            .setDefaultRequestOptions(options)
-    }
 
-    private fun prepareVideoList() {
-        val mediaObject = MediaObject()
-        mediaObject.setId(1)
-        mediaObject.setUserHandle("@h.pandya")
-        mediaObject.setTitle(
-            "Do you think the concept of marriage will no longer exist in the future?"
-        )
-        mediaObject.setCoverUrl(
-            "https://androidwave.com/media/images/exo-player-in-recyclerview-in-android-1.png"
-        )
-        mediaObject.setUrl("https://androidwave.com/media/androidwave-video-1.mp4")
-
-        val mediaObject2 = MediaObject()
-        mediaObject2.setId(2)
-        mediaObject2.setUserHandle("@hardik.patel")
-        mediaObject2.setTitle(
-            "If my future husband doesn't cook food as good as my mother should I scold him?"
-        )
-        mediaObject2.setCoverUrl(
-            "https://androidwave.com/media/images/exo-player-in-recyclerview-in-android-2.png"
-        )
-        mediaObject2.setUrl("https://androidwave.com/media/androidwave-video-2.mp4")
-
-        val mediaObject3 = MediaObject()
-        mediaObject3.setId(3)
-        mediaObject3.setUserHandle("@arun.gandhi")
-        mediaObject3.setTitle("Give your opinion about the Ayodhya temple controversy.")
-        mediaObject3.setCoverUrl(
-            "https://androidwave.com/media/images/exo-player-in-recyclerview-in-android-3.png"
-        )
-        mediaObject3.setUrl("https://androidwave.com/media/androidwave-video-3.mp4")
-
-        val mediaObject4 = MediaObject()
-        mediaObject4.setId(4)
-        mediaObject4.setUserHandle("@sachin.patel")
-        mediaObject4.setTitle("When did kama founders find sex offensive to Indian traditions")
-        mediaObject4.setCoverUrl(
-            "https://androidwave.com/media/images/exo-player-in-recyclerview-in-android-4.png"
-        )
-        mediaObject4.setUrl("https://androidwave.com/media/androidwave-video-6.mp4")
-
-        val mediaObject5 = MediaObject()
-        mediaObject5.setId(5)
-        mediaObject5.setUserHandle("@monika.sharma")
-        mediaObject5.setTitle("When did you last cry in front of someone?")
-        mediaObject5.setCoverUrl(
-            "https://androidwave.com/media/images/exo-player-in-recyclerview-in-android-5.png"
-        )
-        mediaObject5.setUrl("https://androidwave.com/media/androidwave-video-5.mp4")
-
-        mediaObjectList.add(mediaObject)
-        mediaObjectList.add(mediaObject2)
-        mediaObjectList.add(mediaObject3)
-        mediaObjectList.add(mediaObject4)
-        mediaObjectList.add(mediaObject5)
-        mediaObjectList.add(mediaObject)
-        mediaObjectList.add(mediaObject2)
-        mediaObjectList.add(mediaObject3)
-        mediaObjectList.add(mediaObject4)
-        mediaObjectList.add(mediaObject5)
-    }
 }
