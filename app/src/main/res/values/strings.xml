@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DZ-NOW</string>
+    <string name="accueil">Accueil</string>
+    <string name="explorez">Explorez</string>
+    <string name="videos">Vidéos</string>
+    <string name="articles_enregistr_s">Enregistrés</string>
+    <string name="parametres">Parametres</string>
+    <string name="image_des">Image</string>
+    <string name="image_des_ic_share">Share</string>
+    <string name="image_de_categorie">Image de Categorie</string>
+    <string name="imageview">ImageView</string>
+
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_accueil">
+
+    <fragment
+        android:id="@+id/navigation_accueil"
+        android:name="com.example.dz_now.ui.accueil.AccueilFragment"
+        android:label="@string/accueil"
+        tools:layout="@layout/fragment_accueil" />
+
+    <fragment
+        android:id="@+id/navigation_explorez"
+        android:name="com.example.dz_now.ui.explorez.ExplorezFragment"
+        android:label="@string/explorez"
+        tools:layout="@layout/fragment_explorez" />
+
+    <fragment
+        android:id="@+id/navigation_videos"
+        android:name="com.example.dz_now.ui.videos.VideosFragment"
+        android:label="@string/videos"
+        tools:layout="@layout/fragment_videos" />
+
+    <fragment
+        android:id="@+id/navigation_enregistres"
+        android:name="com.example.dz_now.ui.enregistres.EnregistresFragment"
+        android:label="@string/articles_enregistr_s"
+        tools:layout="@layout/fragment_enregistres" />
+
+</navigation>
