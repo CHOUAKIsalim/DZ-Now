@@ -8,6 +8,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -78,6 +79,11 @@ class ArticleDetails : AppCompatActivity() {
 
             }
         }
+
+        val saveButton = findViewById<ImageButton>(R.id.iv_save)
+        saveButton.setOnClickListener{
+
+        }
     }
 
 
@@ -96,6 +102,8 @@ class ArticleDetails : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
     companion object {
         var article : Article? = null
     }

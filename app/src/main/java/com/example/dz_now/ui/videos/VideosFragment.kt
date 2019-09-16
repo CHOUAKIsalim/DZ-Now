@@ -87,18 +87,23 @@ class VideosFragment : Fragment() {
     private fun displayArticles(articles : List<Article>) {
 
 
+        for(article in articles){
+            article.video = article.video.replace("embed/","watch?v=",true)
+            article.video = article.video.replace("?feature=oembed","",true)
+        }
         //set data object
         val article = Article(1,"title","resume","content","date","source","https://img.lemde.fr/2019/04/22/0/191/1619/1079/688/0/60/0/e39da8d_2FIads9h8wB-0SwSgxVaVWsp.jpg","","link",
-            "https://www.youtube.com/watch?v=vxvZh9K5Zes","category")
-        val articles2 = ArrayList<Article>()
-        articles2.add(article)
-        articles2.add(article)
-        articles2.add(article)
-        articles2.add(article)
-        articles2.add(article)
+            "https://www.youtube.com/watch?v=yBXkVcwd7WI","category")
+        val articles2 = listOf<Article>(article)
+//        articles2.add(article)
+     //   articles2.add(article)
+    //    articles2.add(article)
+     //   articles2.add(article)
+      //  articles2.add(article)
 
-//        mAdapter = VideoAdapter(container!!.context, articles2)
-        mAdapter= MediaRecyclerAdapter(articles2, initGlide())
+//         mAdapter = VideoAdapter(container!!.context, articles2)
+       // articles2.add(articles[0])
+        mAdapter= MediaRecyclerAdapter(articles, initGlide())
         recyclerView!!.setMediaObjects(articles)
         recyclerView!!.adapter = mAdapter
 

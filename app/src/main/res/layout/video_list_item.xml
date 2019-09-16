@@ -26,18 +26,6 @@
         tools:text="Was india better then south africa in current serise?"
         />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/mediaContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:srcCompat="@drawable/ic_user"
-        android:contentDescription="@string/imageview" />
 
     <TextView
         android:id="@+id/tvUserHandle"
@@ -46,10 +34,11 @@
         android:layout_marginStart="8dp"
         android:letterSpacing="-0.02"
         android:textColor="@color/windows_blue"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/mediaContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+
         tools:text="by @morris12"
         />
 
