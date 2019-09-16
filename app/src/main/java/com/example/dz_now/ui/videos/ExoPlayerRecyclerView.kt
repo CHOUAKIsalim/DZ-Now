@@ -1,9 +1,11 @@
-package com.example.dz_now
+package com.example.dz_now.ui.videos
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
 import android.net.Uri
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.Display
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +13,16 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import at.huber.youtubeExtractor.VideoMeta
+import at.huber.youtubeExtractor.YouTubeExtractor
+import at.huber.youtubeExtractor.YtFile
 import com.bumptech.glide.RequestManager
+import com.example.dz_now.R
+import com.example.dz_now.entites.Article
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.PlaybackParameters
@@ -40,16 +48,7 @@ import java.util.ArrayList
 import java.util.Objects
 
 
- class ExoPlayerRecyclerView : RecyclerView {
-
-     constructor(myContext: Context, attrs: AttributeSet) : super(myContext, attrs) {
-         this.myContext = myContext
-         init(myContext)
-     }
-     constructor(myContext: Context) : super(myContext) {
-         this.myContext = myContext
-         init(myContext)
-     }
+class ExoPlayerRecyclerView(private var myContext: Context, private val attrs: AttributeSet? = null) : RecyclerView(myContext,attrs) {
 
     private val TAG : String = "ExoPlayerRecyclerView"
     private val AppName: String = "DZ-NOW"
@@ -66,11 +65,11 @@ import java.util.Objects
     private var videoSurfaceView: PlayerView? = null
     private var videoPlayer: SimpleExoPlayer? = null
 
-     /**
+    /**
      * variable declaration
      */
     // Media List
-    private var mediaObjects: ArrayList<MediaObject>  = ArrayList()
+    private var mediaObjects: List<Article>  = ArrayList()
     private var videoSurfaceDefaultHeight: Int  = 0
     private var screenDefaultHeight: Int = 0
     private var playPosition: Int  = -1
@@ -78,7 +77,7 @@ import java.util.Objects
     private var requestManager: RequestManager? = null
     // controlling volume state
     private var volumeState: VolumeState? = null
-    private lateinit var myContext : Context
+
     private val videoViewClickListener : OnClickListener = OnClickListener() {
         @Override
         fun onClick(v: View) {
@@ -86,12 +85,15 @@ import java.util.Objects
         }
     }
 
+    init {
+        init(myContext)
+    }
 
 
     private fun init(context: Context) {
         this.myContext = context.applicationContext
         val display: Display = ( Objects.requireNonNull(
-                getContext().getSystemService(Context.WINDOW_SERVICE)) as WindowManager).defaultDisplay
+            getContext().getSystemService(Context.WINDOW_SERVICE)) as WindowManager).defaultDisplay
         val point : Point = Point()
         display.getSize(point)
 
@@ -103,9 +105,9 @@ import java.util.Objects
 
         val bandwidthMeter: BandwidthMeter = DefaultBandwidthMeter()
         val videoTrackSelectionFactory: TrackSelection.Factory =
-        AdaptiveTrackSelection.Factory(bandwidthMeter)
+            AdaptiveTrackSelection.Factory(bandwidthMeter)
         val trackSelector: TrackSelector =
-        DefaultTrackSelector(videoTrackSelectionFactory)
+            DefaultTrackSelector(videoTrackSelectionFactory)
 
         //Create the player using ExoPlayerFactory
         videoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
@@ -118,7 +120,7 @@ import java.util.Objects
 
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView , newState: Int) {
+            override fun onScrollStateChanged(@NonNull recyclerView: RecyclerView , newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -140,25 +142,25 @@ import java.util.Objects
 
         addOnChildAttachStateChangeListener(object : OnChildAttachStateChangeListener {
 
-            override fun onChildViewAttachedToWindow(view: View ) {
+            override fun onChildViewAttachedToWindow(@NonNull view: View ) {
 
             }
 
-            override fun onChildViewDetachedFromWindow(view: View) {
+            override fun onChildViewDetachedFromWindow(@NonNull view: View) {
                 if (viewHolderParent != null && viewHolderParent!! == view) {
                     resetVideoView()
                 }
             }
-            })
+        })
 
         videoPlayer?.addListener(object:  Player.EventListener {
-            override fun onTimelineChanged(timeline: Timeline?, @Nullable manifest: Any?, reason: Int) {
+
+            override fun onTimelineChanged(timeline: Timeline, @Nullable manifest: Any?, reason: Int) {
 
             }
 
-
             override fun onTracksChanged(trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray) {
+                                         trackSelections: TrackSelectionArray) {
 
             }
 
@@ -180,7 +182,7 @@ import java.util.Objects
                         if (progressBar != null) {
                             progressBar!!.visibility = GONE
                         }
-                        if (isVideoViewAdded== null || !isVideoViewAdded!!) {
+                        if (isVideoViewAdded==null || !isVideoViewAdded!!) {
                             addVideoView()
                         }
                     }
@@ -220,7 +222,7 @@ import java.util.Objects
 
         if (!isEndOfList) {
             val startPosition : Int = ( Objects.requireNonNull(
-                    layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
+                layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
 
             var endPosition: Int = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
@@ -264,12 +266,12 @@ import java.util.Objects
         removeVideoView(videoSurfaceView!!)
 
         val currentPosition: Int =
-        targetPosition - (Objects.requireNonNull(
+            targetPosition - (Objects.requireNonNull(
                 layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
 
         val child: View = getChildAt(currentPosition) ?: return
 
-        val holder: PlayerViewHolder=  child.tag as PlayerViewHolder
+        val holder: PlayerViewHolder =  child.tag as PlayerViewHolder
         if (holder == null) {
             playPosition = -1
             return
@@ -287,20 +289,42 @@ import java.util.Objects
         val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
             context, Util.getUserAgent(context, AppName))
 
-        val mediaUrl: String = mediaObjects[targetPosition].getUrl().toString()
-        val videoSource: MediaSource = ExtractorMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(Uri.parse(mediaUrl))
-        videoPlayer?.prepare(videoSource)
-        videoPlayer?.playWhenReady = true
+
+        val mExtractor = @SuppressLint("StaticFieldLeak")
+        object : YouTubeExtractor(context) {
+            override fun onExtractionComplete(
+                sparseArray: SparseArray<YtFile>?,
+                videoMeta: VideoMeta
+            ) {
+                if (sparseArray != null) {
+                    val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
+                        context, Util.getUserAgent(context, AppName))
+                    if (sparseArray != null) {
+                        val videoSource: MediaSource = ExtractorMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(Uri.parse(sparseArray.get(sparseArray.keyAt(0)).url))
+                        videoPlayer?.prepare(videoSource)
+                        videoPlayer?.playWhenReady = true
+                    }
+                }
+            }
+        }
+
+        if(mediaObjects[targetPosition].video !=null && mediaObjects[targetPosition].video !="") {
+            val mediaUrl: String = mediaObjects[targetPosition].video
+            mExtractor.extract(mediaUrl, true, true)
+        }
+
     }
+
+
 
     /**
      * Returns the visible region of the video surface on the screen.
      * if some is cut off, it will return less than the @videoSurfaceDefaultHeight
      */
     private fun getVisibleVideoSurfaceHeight(playPosition: Int): Int {
-      val at: Int  = playPosition - ( Objects.requireNonNull(
-              layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
+        val at: Int  = playPosition - ( Objects.requireNonNull(
+            layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
 
 
         val child: View = getChildAt(at) ?: return 0
@@ -341,7 +365,7 @@ import java.util.Objects
     }
 
     private fun resetVideoView() {
-        if (isVideoViewAdded != null && isVideoViewAdded!!) {
+        if (isVideoViewAdded!=null && isVideoViewAdded!!) {
             removeVideoView(videoSurfaceView!!)
             playPosition = -1
             videoSurfaceView!!.visibility = INVISIBLE
@@ -403,7 +427,7 @@ import java.util.Objects
         }
     }
 
-    fun setMediaObjects(mediaObjects : ArrayList<MediaObject> ) {
+    fun setMediaObjects(mediaObjects : List<Article> ) {
         this.mediaObjects = mediaObjects
     }
 
@@ -411,6 +435,6 @@ import java.util.Objects
      * Volume ENUM
      */
     private enum class VolumeState {
-            ON, OFF
+        ON, OFF
     }
 }

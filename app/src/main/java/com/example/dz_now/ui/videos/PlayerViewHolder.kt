@@ -1,5 +1,4 @@
-package com.example.dz_now
-
+package com.example.dz_now.ui.videos
 
 import android.view.View
 import android.widget.FrameLayout
@@ -9,6 +8,8 @@ import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.example.dz_now.R
+import com.example.dz_now.entites.Article
 
 
 class PlayerViewHolder(@NonNull itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,15 +35,15 @@ class PlayerViewHolder(@NonNull itemView: View) : RecyclerView.ViewHolder(itemVi
         userHandle = itemView.findViewById(R.id.tvUserHandle)
         progressBar = itemView.findViewById(R.id.progressBar)
         volumeControl = itemView.findViewById(R.id.ivVolumeControl)
-     }
+    }
 
-    fun onBind(mediaObject: MediaObject, requestManager: RequestManager) {
+    fun onBind(mediaObject: Article, requestManager: RequestManager) {
         this.requestManager = requestManager
         parent?.tag = this
-        title?.text = mediaObject.getTitle()
-        userHandle?.text = mediaObject.getUserHandle()
+        title?.text = mediaObject.title
+        userHandle?.text = mediaObject.source
         this.requestManager!!
-            .load(mediaObject.getCoverUrl())
+            .load(mediaObject.image)
             .into(mediaCoverImage!!)
     }
 }

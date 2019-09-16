@@ -1,4 +1,4 @@
-package com.example.dz_now
+package com.example.dz_now.ui.explorez
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dz_now.R
 import com.example.dz_now.entites.Category
 
 

@@ -14,7 +14,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.RequestManager
 import android.os.Looper
 import android.os.Handler
-import android.util.Log
 import com.example.dz_now.*
 import com.example.dz_now.entites.Article
 import com.example.dz_now.services.ArticleService
@@ -26,6 +25,10 @@ import io.reactivex.schedulers.Schedulers
 
 class VideosFragment : Fragment() {
 
+
+    // To keep the container
+    private var container: ViewGroup? = null
+
     //Reference to recyclerview
     private var recyclerView: ExoPlayerRecyclerView? = null
 
@@ -35,15 +38,18 @@ class VideosFragment : Fragment() {
     // Observer
     private lateinit var compositeDisposable: CompositeDisposable
 
-    private val mediaObjectList : ArrayList<MediaObject> = ArrayList()
     private var mAdapter: MediaRecyclerAdapter? = null
     private var firstTime = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //Keep the container
+        this.container = container
 
         val root = inflater.inflate(R.layout.fragment_videos, container, false)
 
@@ -79,22 +85,21 @@ class VideosFragment : Fragment() {
     }
 
     private fun displayArticles(articles : List<Article>) {
-        articles.forEach{
-            if(it.video !=null && it.video != "")
-            {
-                val mediaObject = MediaObject()
-                mediaObject.setId(it.id)
-                mediaObject.setUserHandle(it.source)
-                mediaObject.setTitle(it.title)
-                mediaObject.setCoverUrl(it.image)
-                mediaObject.setUrl(it.video+".mp4")
-                mediaObjectList.add(mediaObject)
-            }
-        }
-        //set data object
-        recyclerView!!.setMediaObjects(mediaObjectList)
-        mAdapter = MediaRecyclerAdapter(mediaObjectList, initGlide())
 
+
+        //set data object
+        val article = Article(1,"title","resume","content","date","source","https://img.lemde.fr/2019/04/22/0/191/1619/1079/688/0/60/0/e39da8d_2FIads9h8wB-0SwSgxVaVWsp.jpg","","link",
+            "https://www.youtube.com/watch?v=vxvZh9K5Zes","category")
+        val articles2 = ArrayList<Article>()
+        articles2.add(article)
+        articles2.add(article)
+        articles2.add(article)
+        articles2.add(article)
+        articles2.add(article)
+
+//        mAdapter = VideoAdapter(container!!.context, articles2)
+        mAdapter= MediaRecyclerAdapter(articles2, initGlide())
+        recyclerView!!.setMediaObjects(articles)
         recyclerView!!.adapter = mAdapter
 
         if(firstTime) {

@@ -15,4 +15,8 @@
     <color name="colorGray">#CCCCCC</color>
     <color name="navy">#021430</color>
     <color name="windows_blue">#3495af</color>
+    <color name="recyclerViewDivider">#61ced7db</color>
+    <color name="gradient_start">#7f000000</color>
+    <color name="gradient_end">#00000000</color>
+    <color name="colorTextSecondary">#000000</color>
 </resources>

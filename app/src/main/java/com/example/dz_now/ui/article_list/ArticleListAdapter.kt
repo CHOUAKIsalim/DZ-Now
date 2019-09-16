@@ -1,4 +1,4 @@
-package com.example.dz_now
+package com.example.dz_now.ui.article_list
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,13 +12,15 @@ import com.bumptech.glide.Glide
 import com.example.dz_now.entites.Article
 import java.text.SimpleDateFormat
 import android.text.format.DateUtils
-import android.util.Log
+import com.example.dz_now.R
+import java.lang.Exception
 import java.util.*
 
 
 class ArticleListAdapter(
     val context: Context,
-    var list: List<Article>
+    var list: List<Article>,
+    val clickListener: (Article) -> Unit
 ) : RecyclerView.Adapter<ArticleListAdapter.ArticleViewHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ArticleViewHolder {
@@ -39,17 +41,30 @@ class ArticleListAdapter(
         p0.contenu.text = article.resume
         p0.auteur.text = article.author
 
-        Log.e("Date : ",article.date)
         val inputFormat: SimpleDateFormat  = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        val date = inputFormat.parse(article.date)
-        val niceDateStr = DateUtils.getRelativeTimeSpanString(
-            date.time,
-            Calendar.getInstance().timeInMillis,
-            DateUtils.MINUTE_IN_MILLIS
-        )
+        val inputFormat2: SimpleDateFormat  = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        try {
+            val date = inputFormat.parse(article.date)
+            val niceDateStr = DateUtils.getRelativeTimeSpanString(
+                date.time,
+                Calendar.getInstance().timeInMillis,
+                DateUtils.MINUTE_IN_MILLIS
+            )
+            p0.date.text = niceDateStr
 
-        p0.date.text = niceDateStr
+        }catch (e:Exception) {
+            try {
+                val date = inputFormat2.parse(article.date)
+                val niceDateStr = DateUtils.getRelativeTimeSpanString(
+                    date.time,
+                    Calendar.getInstance().timeInMillis,
+                    DateUtils.MINUTE_IN_MILLIS
+                )
+                p0.date.text = niceDateStr
+            }catch (e:Exception) {
 
+            }
+        }
         if(article.image!="") {
             Glide.with(context)
                 .load(article.image)
@@ -57,14 +72,11 @@ class ArticleListAdapter(
                 .into(p0.image)
         }
 
-        p0.linearLayout.setOnClickListener{
-//            Log.e("On cliiiiiiiick  : ", article.image)
-        }
-
+        p0.linearLayout.setOnClickListener{clickListener(article)}
     }
 
 
-    class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titre = itemView.findViewById(R.id.titre) as TextView
         var resume = itemView.findViewById(R.id.resume) as TextView
         var auteur = itemView.findViewById(R.id.auteur) as TextView
@@ -73,6 +85,7 @@ class ArticleListAdapter(
         val date = itemView.findViewById(R.id.date) as TextView
         val contenu = itemView.findViewById(R.id.trail_text_card) as TextView
         val linearLayout = itemView.findViewById(R.id.linearLayout) as LinearLayout
+
     }
 }
 

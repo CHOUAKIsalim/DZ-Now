@@ -9,5 +9,10 @@
     <string name="image_des_ic_share">Share</string>
     <string name="image_de_categorie">Image de Categorie</string>
     <string name="imageview">ImageView</string>
+    <string name="imagebutton">ImageButton</string>
+    <string name="read_full_story">read_full_story</string>
+    <string name="sharebutton">shareButton</string>
+    <string name="save_button">save Button</string>
+    <string name="ouvrir_dans_navigateur">Ouvrir dans navigateur</string>
 
 </resources>

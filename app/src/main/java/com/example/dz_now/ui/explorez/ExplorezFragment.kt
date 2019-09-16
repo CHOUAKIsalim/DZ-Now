@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dz_now.CategoryListAdapter
 import com.example.dz_now.R
 import com.example.dz_now.entites.Category
 import com.example.dz_now.services.CategoryService
@@ -86,7 +85,8 @@ class ExplorezFragment : Fragment() {
     }
 
     private fun displayCategories(categories : List<Category>) {
-        val adapter = CategoryListAdapter(container!!.context, categories)
+        val adapter =
+            CategoryListAdapter(container!!.context, categories)
         recyclerView!!.adapter = adapter
         spinner!!.visibility = View.GONE
     }
