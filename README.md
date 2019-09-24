@@ -8,7 +8,7 @@ Une application qui regroupe les sites d'informations algeriens, elle permet d'a
 - Enregistrement des articles en local (API Room)
 - Authentification google
 - Enregistrement des articles dans une base de données distante (Retrofit) 
-- Utilisation d'une api
+- Utilisation d'une api pour l'obtention des articles (Retrofit)
 
 [![Image Accueil](images/Accueil.png)] | [![Image Explorez](images/Explorez.png)]
 ![Image Videos](images/videos.png) ![Image Enregistrés](images/enregistres.png)
