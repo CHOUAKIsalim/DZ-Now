@@ -3,7 +3,7 @@ Une application qui regroupe les sites d'informations algeriens, elle permet d'a
 
 - Affichage de tous les articles (recyclerview)
 - Affichage d'un article (écran natif) 
-- Affichage de l'article original (webview
+- Affichage de l'article original (webview)
 - Ecran contenant uniquement les vidéos des articles (RecyclerView - ExoPlayer - YoutubeExtractor) 
 - Enregistrement des articles en local (API Room)
 - Authentification google
