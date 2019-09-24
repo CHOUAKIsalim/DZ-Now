@@ -11,5 +11,5 @@ Une application qui regroupe les sites d'informations algeriens, elle permet d'a
 - Utilisation d'une api
 
 ![Image Accueil](images/Accueil.png) ![Image Explorez](images/Explorez.png)
-![Immage Videos](images/videos.png) ![Immage Enregistrés](images/enregistres.png)
-![Immage Article](images/Article.png) ![Immage Article_Enregistre](images/Article Enregistré.png)
+![Image Videos](images/videos.png) ![Image Enregistrés](images/enregistres.png)
+![Image Article](images/Article.png) ![Image Article_Enregistre](images/Article_Enregistre.png)
